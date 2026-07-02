@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+================================================================================
+  PERSONAL ARCHITECTURE PORTFOLIO — EDIT GUIDE
+================================================================================
+  This is a personal portfolio for an individual architect / architecture
+  graduate, intended to showcase work to studios and recruiters when applying
+  for jobs.
+
+  HOW TO ADD A PROJECT
+  ─────────────────────
+  1. Find the section "PROJECT DATA" in the <script> tag near the bottom.
+  2. Copy one of the existing project objects and paste it into the `projects` array.
+  3. Increment the `id` number and fill in your own text.
+  4. Add your image URLs to the `images` array inside the project.
+  5. Fill in `role` — what YOU did on the project (e.g. "Design Lead",
+     "Studio Project, Year 4", "Internship — Detail Design"). This is what
+     reviewers look for first, so be specific and honest.
+
+  HOW TO REPLACE IMAGES
+  ──────────────────────
+  Inside each project object, find the `images` array.
+  Replace each URL string with your own image path, e.g.:
+    "images/my-project-photo.jpg"
+  or use any absolute URL:
+    "https://example.com/photo.jpg"
+  The `cover` field is the image shown in the table of contents on hover.
+  Also replace the portrait photo in the About section (search "ABOUT_PHOTO").
+
+  HOW TO EDIT TEXT
+  ─────────────────
+  All project text lives in the PROJECT DATA section of the <script>.
+  Fields: title, year, location, type, role, description, body (long text), details.
+
+  HOW TO CHANGE PROJECT ORDER
+  ────────────────────────────
+  Reorder the objects inside the `projects` array.
+  The numbering (01, 02…) is generated automatically.
+
+  HOW TO ADD YOUR CV / RESUME
+  ─────────────────────────────
+  Search for "CV_LINK" below and replace the href with a link to your
+  CV (PDF), e.g. a link to a file hosted on Google Drive/Dropbox, or a
+  local file like "files/cv.pdf" placed next to this index.html.
+
+  HOW TO CHANGE YOUR NAME / CONTACT DETAILS
+  ─────────────────────────────────────────
+  Search for "YOUR_NAME", "YOUR_EMAIL", "YOUR_PHONE", "YOUR_LOCATION",
+  "YOUR_LINKEDIN" below and replace with your own details.
+
+================================================================================
+-->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nick van Ramshorst — Architecture Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─────────────────────────────────────────────
+       TOKENS
+    ───────────────────────────────────────────── */
+    :root {
+      --white:      #FFFFFF;
+      --black:      #0A0A0A;
+      --gray-100:   #F5F4F2;
+      --gray-200:   #E8E6E1;
+      --gray-400:   #C4C0B8;
+      --gray-600:   #8A8680;
+      --gray-800:   #4A4744;
+
+      --font-serif: 'EB Garamond', Georgia, serif;
+      --font-sans:  'Inter', system-ui, sans-serif;
+
+      --max-w: 1400px;
+      --pad-x: clamp(24px, 5vw, 80px);
+      --pad-x-sm: clamp(16px, 3vw, 40px);
+
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-fast: 0.25s;
+      --dur-med: 0.5s;
+      --dur-slow: 0.8s;
+      --dur-xslow: 1.1s;
+    }
+
+    /* ─────────────────────────────────────────────
+       RESET
+    ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+    img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    button { background: none; border: none; cursor: pointer; font: inherit; color: inherit; padding: 0; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─────────────────────────────────────────────
+       CUSTOM CURSOR
+    ───────────────────────────────────────────── */
+    .cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 10px; height: 10px;
+      background: var(--black);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width var(--dur-fast) var(--ease-out),
+                  height var(--dur-fast) var(--ease-out),
+                  background var(--dur-fast) var(--ease-out),
+                  opacity var(--dur-fast) var(--ease-out);
+      mix-blend-mode: multiply;
+    }
+    .cursor.is-hovering {
+      width: 44px; height: 44px;
+      background: var(--black);
+      opacity: 0.12;
+    }
+    .cursor.is-image {
+      width: 80px; height: 80px;
+      background: var(--black);
+      opacity: 0.08;
+    }
+    @media (hover: none) { .cursor { display: none; } }
+
+    /* ─────────────────────────────────────────────
+       NAVIGATION
+    ───────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px var(--pad-x);
+      mix-blend-mode: multiply;
+    }
+    .nav__logo {
+      font-family: var(--font-serif);
+      font-size: 1.125rem;
+      letter-spacing: 0.02em;
+      transition: opacity var(--dur-fast) var(--ease-out);
+    }
+    .nav__logo:hover { opacity: 0.5; }
+    .nav__links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav__links a {
+      font-size: 0.6875rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      position: relative;
+      transition: opacity var(--dur-fast) var(--ease-out);
+    }
+    .nav__links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--black);
+      transition: width var(--dur-med) var(--ease-out);
+    }
+    .nav__links a:hover::after { width: 100%; }
+    .nav__links a:hover { opacity: 0.6; }
+
+    /* ─────────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────────── */
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      padding: 120px var(--pad-x) 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero__content {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding-bottom: 8vh;
+    }
+    .hero__eyebrow {
+      font-size: 0.6875rem;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .hero__eyebrow span { display: block; transform: translateY(100%); animation: slideUp var(--dur-slow) var(--ease-out) 0.2s forwards; }
+    .hero__title {
+      font-family: var(--font-serif);
+      font-size: clamp(3.5rem, 8vw, 9rem);
+      font-weight: 400;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      overflow: hidden;
+    }
+    .hero__title-line {
+      display: block;
+      transform: translateY(110%);
+      animation: slideUp var(--dur-xslow) var(--ease-out) forwards;
+    }
+    .hero__title-line:nth-child(1) { animation-delay: 0.3s; }
+    .hero__title-line:nth-child(2) { animation-delay: 0.45s; font-style: italic; }
+    .hero__title-line:nth-child(3) { animation-delay: 0.6s; }
+    .hero__meta {
+      margin-top: 48px;
+      display: flex;
+      gap: 48px;
+      opacity: 0;
+      animation: fadeIn var(--dur-slow) var(--ease-out) 1s forwards;
+    }
+    .hero__meta-item { display: flex; flex-direction: column; gap: 4px; }
+    .hero__meta-label {
+      font-size: 0.625rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+    }
+    .hero__meta-value { font-size: 0.875rem; }
+
+    .hero__scroll-hint {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeIn var(--dur-slow) var(--ease-out) 1.3s forwards;
+    }
+    .hero__scroll-line {
+      width: 40px; height: 1px;
+      background: var(--gray-400);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero__scroll-line::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: var(--black);
+      animation: scanLine 2s var(--ease-in-out) 1.5s infinite;
+    }
+    .hero__scroll-text {
+      font-size: 0.625rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+    }
+
+    /* ─────────────────────────────────────────────
+       PREVIEW IMAGE (hovers near cursor on TOC)
+    ───────────────────────────────────────────── */
+    .preview-image {
+      position: fixed;
+      width: clamp(220px, 22vw, 360px);
+      aspect-ratio: 3/4;
+      pointer-events: none;
+      z-index: 50;
+      overflow: hidden;
+      opacity: 0;
+      transform: scale(0.94) translateY(8px);
+      transition: opacity 0.4s var(--ease-out),
+                  transform 0.4s var(--ease-out);
+    }
+    .preview-image.is-visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    .preview-image img {
+      transition: transform 6s var(--ease-out);
+    }
+    .preview-image.is-visible img { transform: scale(1.04); }
+
+    /* ─────────────────────────────────────────────
+       DIVIDER
+    ───────────────────────────────────────────── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--gray-200);
+    }
+
+    /* ─────────────────────────────────────────────
+       TABLE OF CONTENTS
+    ───────────────────────────────────────────── */
+    .toc {
+      padding: 0 var(--pad-x);
+    }
+    .toc__header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 48px 0 40px;
+    }
+    .toc__label {
+      font-size: 0.6875rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+    }
+    .toc__count { font-size: 0.6875rem; color: var(--gray-600); }
+
+    .toc__list { list-style: none; }
+
+    .toc__item {
+      border-top: 1px solid var(--gray-200);
+      position: relative;
+    }
+    .toc__item:last-child { border-bottom: 1px solid var(--gray-200); }
+
+    .toc__trigger {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      align-items: center;
+      padding: 28px 0;
+      cursor: pointer;
+      text-align: left;
+      transition: opacity var(--dur-fast) var(--ease-out);
+      position: relative;
+    }
+
+    /* animated fill bar on hover */
+    .toc__trigger::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gray-100);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.6s var(--ease-out);
+      z-index: 0;
+    }
+    .toc__trigger:hover::before { transform: scaleX(1); }
+    .toc__trigger > * { position: relative; z-index: 1; }
+
+    .toc__num {
+      font-size: 0.6875rem;
+      color: var(--gray-600);
+      letter-spacing: 0.06em;
+      transition: color var(--dur-fast) var(--ease-out);
+    }
+    .toc__title-wrap { overflow: hidden; }
+    .toc__title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      transition: transform var(--dur-med) var(--ease-out);
+      display: inline-block;
+    }
+    .toc__trigger:hover .toc__title { transform: translateX(6px); }
+
+    .toc__meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+      opacity: 0;
+      transform: translateX(8px);
+      transition: opacity var(--dur-med) var(--ease-out),
+                  transform var(--dur-med) var(--ease-out);
+    }
+    .toc__trigger:hover .toc__meta {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .toc__year {
+      font-size: 0.6875rem;
+      color: var(--gray-600);
+      letter-spacing: 0.06em;
+    }
+    .toc__type {
+      font-size: 0.625rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-400);
+    }
+
+    /* ─────────────────────────────────────────────
+       PROJECT PANEL (expands below TOC item)
+    ───────────────────────────────────────────── */
+    .project-panel {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.9s var(--ease-out);
+    }
+    .project-panel.is-open { max-height: 9000px; }
+
+    .project-panel__inner {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity var(--dur-slow) var(--ease-out) 0.15s,
+                  transform var(--dur-slow) var(--ease-out) 0.15s;
+      padding-bottom: 80px;
+    }
+    .project-panel.is-open .project-panel__inner {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Project header */
+    .proj__header {
+      padding: 48px 0 56px;
+      display: grid;
+      grid-template-columns: 64px 1fr 1fr;
+      gap: 0 40px;
+      border-top: 1px solid var(--gray-200);
+    }
+    .proj__header-spacer { /* empty first column */ }
+    .proj__title-block {}
+    .proj__title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 5vw, 4.5rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 24px;
+    }
+    .proj__description {
+      font-size: 1.0625rem;
+      line-height: 1.65;
+      color: var(--gray-800);
+      max-width: 520px;
+    }
+    .proj__info-block {
+      padding-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .proj__info-row {}
+    .proj__info-label {
+      font-size: 0.5875rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: 3px;
+    }
+    .proj__info-value { font-size: 0.875rem; }
+
+    /* Close button */
+    .proj__close {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 32px;
+      font-size: 0.6875rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: color var(--dur-fast) var(--ease-out);
+      position: relative;
+    }
+    .proj__close::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gray-600);
+      transition: width var(--dur-med) var(--ease-out);
+    }
+    .proj__close:hover { color: var(--black); }
+    .proj__close:hover::after { width: 100%; }
+    .proj__close-icon {
+      width: 16px; height: 16px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .proj__close-icon::before,
+    .proj__close-icon::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 14px; height: 1px;
+      background: currentColor;
+    }
+    .proj__close-icon::before { transform: translate(-50%,-50%) rotate(45deg); }
+    .proj__close-icon::after { transform: translate(-50%,-50%) rotate(-45deg); }
+
+    /* Image grid */
+    .proj__images {
+      display: grid;
+      gap: 2px;
+    }
+    .proj__img-full { grid-column: 1/-1; aspect-ratio: 16/9; overflow: hidden; }
+    .proj__img-half { aspect-ratio: 4/3; overflow: hidden; }
+    .proj__img-tall { aspect-ratio: 2/3; overflow: hidden; }
+    .proj__images.layout-2col { grid-template-columns: 1fr 1fr; }
+    .proj__images.layout-3col { grid-template-columns: 2fr 1fr; }
+
+    .proj__img-full img,
+    .proj__img-half img,
+    .proj__img-tall img {
+      transition: transform 0.8s var(--ease-out);
+    }
+    .proj__img-full:hover img,
+    .proj__img-half:hover img,
+    .proj__img-tall:hover img { transform: scale(1.03); }
+
+    /* Body text */
+    .proj__body {
+      padding: 64px 0;
+      display: grid;
+      grid-template-columns: 64px 1fr 1fr;
+      gap: 0 40px;
+    }
+    .proj__body-text {
+      grid-column: 2;
+      font-size: 1.0625rem;
+      line-height: 1.75;
+      color: var(--gray-800);
+    }
+    .proj__body-text p + p { margin-top: 1.4em; }
+
+    .proj__details {
+      grid-column: 3;
+      padding-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .proj__detail {}
+    .proj__detail-label {
+      font-size: 0.5875rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: 4px;
+    }
+    .proj__detail-value { font-size: 0.875rem; line-height: 1.5; }
+
+    /* ─────────────────────────────────────────────
+       ABOUT
+    ───────────────────────────────────────────── */
+    .about {
+      padding: 120px var(--pad-x);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .about__image-col {}
+    .about__image-wrap {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      position: sticky;
+      top: 100px;
+    }
+    .about__image-wrap img { transition: transform 0.8s var(--ease-out); }
+    .about__image-wrap:hover img { transform: scale(1.03); }
+
+    .about__text-col {
+      padding-top: 8px;
+    }
+    .about__eyebrow {
+      font-size: 0.6875rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: 40px;
+    }
+    .about__heading {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4vw, 3.75rem);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 48px;
+    }
+    .about__body {
+      font-size: 1.0625rem;
+      line-height: 1.75;
+      color: var(--gray-800);
+    }
+    .about__body p + p { margin-top: 1.5em; }
+
+    .about__skills {
+      margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid var(--gray-200);
+    }
+    .about__skills-label {
+      font-size: 0.6875rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: 20px;
+    }
+    .about__skills-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px 24px;
+    }
+    .about__skills-list li {
+      font-size: 0.9375rem;
+      position: relative;
+      padding-left: 16px;
+    }
+    .about__skills-list li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0.6em;
+      width: 5px; height: 1px;
+      background: var(--black);
+    }
+
+    .about__cv-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 48px;
+      padding: 16px 28px;
+      border: 1px solid var(--black);
+      font-size: 0.6875rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: background var(--dur-fast) var(--ease-out),
+                  color var(--dur-fast) var(--ease-out);
+    }
+    .about__cv-link:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+    .about__cv-arrow {
+      display: inline-block;
+      transition: transform var(--dur-fast) var(--ease-out);
+    }
+    .about__cv-link:hover .about__cv-arrow {
+      transform: translateY(2px);
+    }
+
+    .about__team {
+      margin-top: 48px;
+    }
+    .about__team-label {
+      font-size: 0.6875rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: 24px;
+    }
+    .about__team-list { list-style: none; }
+    .about__team-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-top: 1px solid var(--gray-200);
+      font-size: 0.9375rem;
+    }
+    .about__team-list li:last-child { border-bottom: 1px solid var(--gray-200); }
+    .about__team-role {
+      font-size: 0.75rem;
+      color: var(--gray-600);
+      align-self: center;
+    }
+
+    /* ─────────────────────────────────────────────
+       CONTACT
+    ───────────────────────────────────────────── */
+    .contact {
+      padding: 120px var(--pad-x);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      border-top: 1px solid var(--gray-200);
+    }
+    .contact__heading {
+      font-family: var(--font-serif);
+      font-size: clamp(3rem, 6vw, 7rem);
+      font-weight: 400;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      grid-column: 1 / -1;
+    }
+    .contact__heading em { font-style: italic; }
+    .contact__info { display: flex; flex-direction: column; gap: 32px; align-items: flex-start; }
+    .contact__intro {
+      font-size: 1.0625rem;
+      line-height: 1.65;
+      color: var(--gray-800);
+      max-width: 420px;
+      margin-bottom: 8px;
+    }
+    .contact__info-block {}
+    .contact__info-label {
+      font-size: 0.6875rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: 8px;
+    }
+    .contact__info-value {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .contact__info-value a {
+      position: relative;
+      display: inline-block;
+    }
+    .contact__info-value a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 1px;
+      background: var(--black);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform var(--dur-med) var(--ease-out);
+    }
+    .contact__info-value a:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .contact__form-col {}
+    .contact__form-label {
+      font-size: 0.6875rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: 24px;
+      display: block;
+    }
+    .contact__field {
+      margin-bottom: 2px;
+    }
+    .contact__field input,
+    .contact__field textarea {
+      width: 100%;
+      background: var(--gray-100);
+      border: none;
+      padding: 16px 20px;
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      font-weight: 300;
+      color: var(--black);
+      outline: none;
+      transition: background var(--dur-fast) var(--ease-out);
+      -webkit-appearance: none;
+      border-radius: 0;
+    }
+    .contact__field input::placeholder,
+    .contact__field textarea::placeholder { color: var(--gray-600); }
+    .contact__field input:focus,
+    .contact__field textarea:focus { background: var(--gray-200); }
+    .contact__field textarea { resize: none; height: 120px; }
+
+    .contact__submit {
+      margin-top: 2px;
+      width: 100%;
+      background: var(--black);
+      color: var(--white);
+      padding: 18px 20px;
+      font-family: var(--font-sans);
+      font-size: 0.6875rem;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      transition: background var(--dur-fast) var(--ease-out),
+                  transform var(--dur-fast) var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+    .contact__submit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--white);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--dur-med) var(--ease-out);
+      mix-blend-mode: difference;
+    }
+    .contact__submit:hover::after { transform: scaleX(1); }
+
+    /* ─────────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────────── */
+    .footer {
+      padding: 32px var(--pad-x);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--gray-200);
+    }
+    .footer__copy {
+      font-size: 0.6875rem;
+      color: var(--gray-600);
+      letter-spacing: 0.04em;
+    }
+    .footer__back {
+      font-size: 0.6875rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: color var(--dur-fast);
+    }
+    .footer__back:hover { color: var(--black); }
+
+    /* ─────────────────────────────────────────────
+       KEYFRAMES
+    ───────────────────────────────────────────── */
+    @keyframes slideUp {
+      to { transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes scanLine {
+      0%   { left: -100%; }
+      50%  { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    /* ─────────────────────────────────────────────
+       SCROLL REVEAL
+    ───────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity var(--dur-slow) var(--ease-out),
+                  transform var(--dur-slow) var(--ease-out);
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─────────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .toc__trigger {
+        grid-template-columns: 48px 1fr;
+        gap: 0 16px;
+      }
+      .toc__meta { display: none; }
+      .proj__header {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .proj__header-spacer { display: none; }
+      .proj__body {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .proj__body-text { grid-column: 1; }
+      .proj__details { grid-column: 1; flex-direction: row; flex-wrap: wrap; gap: 16px 32px; }
+      .proj__images.layout-2col,
+      .proj__images.layout-3col { grid-template-columns: 1fr; }
+      .about { grid-template-columns: 1fr; gap: 48px; }
+      .about__image-wrap { position: static; aspect-ratio: 4/3; }
+      .contact { grid-template-columns: 1fr; gap: 48px; }
+      .contact__heading { grid-column: 1; }
+      .nav__links { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .hero__meta { flex-wrap: wrap; gap: 24px; }
+      .about__skills-list { grid-template-columns: 1fr; }
+    }
+
+    /* ─────────────────────────────────────────────
+       REDUCED MOTION
+    ───────────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+
+  <!-- Preview image that follows cursor on TOC hover -->
+  <div class="preview-image" id="previewImage">
+    <img src="" alt="" id="previewImg" />
+  </div>
+
+  <!-- ─── NAVIGATION ─────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <!-- YOUR_NAME: change the text below -->
+    <a href="#" class="nav__logo">Nick van Ramshorst</a>
+    <ul class="nav__links">
+      <li><a href="#projects">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <!-- CV_LINK: replace href with a link to your CV (PDF) -->
+      <li><a href="CV.html" target="_blank" rel="noopener">CV</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <!-- ─── HERO ───────────────────────────────────── -->
+    <section class="hero" id="home">
+      <div class="hero__content">
+        <div class="hero__eyebrow">
+          <span>Architecture &amp; Spatial Design</span>
+        </div>
+        <h1 class="hero__title" aria-label="I design what endures">
+          <span class="hero__title-line">I design</span>
+          <span class="hero__title-line">what</span>
+          <span class="hero__title-line">endures.</span>
+        </h1>
+        <div class="hero__meta">
+          <div class="hero__meta-item">
+            <span class="hero__meta-label">Based in</span>
+            <!-- YOUR_LOCATION -->
+            <span class="hero__meta-value">Utrecht, NL</span>
+          </div>
+          <div class="hero__meta-item">
+            <span class="hero__meta-label">Education</span>
+            <span class="hero__meta-value">MSc Architecture, TU Delft</span>
+          </div>
+          <div class="hero__meta-item">
+            <span class="hero__meta-label">Currently</span>
+            <span class="hero__meta-value">Open to new opportunities</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero__scroll-hint">
+        <div class="hero__scroll-line"></div>
+        <span class="hero__scroll-text">Scroll to explore</span>
+      </div>
+    </section>
+
+    <!-- ─── TABLE OF CONTENTS ──────────────────────── -->
+    <section class="toc" id="projects" aria-label="Projects">
+      <div class="toc__header reveal">
+        <span class="toc__label">Selected Work</span>
+        <span class="toc__count" id="tocCount"></span>
+      </div>
+
+      <ul class="toc__list" id="tocList" aria-label="Project list">
+        <!-- Projects are generated by JavaScript below -->
+      </ul>
+    </section>
+
+    <!-- ─── ABOUT ──────────────────────────────────── -->
+    <section class="about" id="about" aria-label="About me">
+      <div class="about__image-col reveal">
+        <div class="about__image-wrap">
+          <!-- ABOUT_PHOTO: replace this URL with your own portrait photo -->
+          <img
+            src="images/Me.JPG"
+            alt="Portrait of Nick van Ramshorst"
+            loading="lazy"
+          />
+        </div>
+      </div>
+      <div class="about__text-col">
+        <p class="about__eyebrow reveal">About Me</p>
+        <h2 class="about__heading reveal">
+          Designing architecture that adapts, connects, and endures.
+        </h2>
+        <div class="about__body reveal">
+          <!-- YOUR_NAME / Edit your personal bio here -->
+          <p>I'm Nick van Ramshorst, an architecture graduate from TU Delft based in Utrecht. I enjoy designing architecture that brings people together while remaining adaptable to changing needs over time. Whether working on a cultural centre, a community hub, or housing, I'm interested in how thoughtful spatial design can strengthen everyday life and create lasting value.</p>
+          <p>My projects are grounded in research but developed through making. I enjoy moving between conceptual thinking and hands-on experimentation, whether that means building physical models, exploring the qualities of materials such as timber and glass, or testing new digital design tools. During an exchange semester in Sydney, I developed a deeper appreciation for architecture as a personal and spatial experience, an approach that continues to influence my work.</p>
+          <p>I completed my MSc in Architecture at TU Delft in 2026 and am looking to join a practice where I can continue developing as a designer, contributing with curiosity, technical understanding, and a strong interest in creating architecture that is both meaningful and enduring.</p>
+        </div>
+
+        <!-- Skills — edit the list to reflect your own toolset -->
+        <div class="about__skills reveal">
+          <p class="about__skills-label">Skills &amp; Software</p>
+          <ul class="about__skills-list">
+            <li>Rhino &amp; Grasshopper</li>
+            <li>Adobe Creative Suite</li>
+            <li>Physical Model Making</li>
+            <li>Climate &amp; Material Research</li>
+          </ul>
+        </div>
+
+        <div class="about__team reveal">
+          <p class="about__team-label">Education &amp; Experience</p>
+          <!-- Edit your education and work history here -->
+          <ul class="about__team-list">
+            <li>MSc Architecture, TU Delft <span class="about__team-role">2024 — 2026</span></li>
+            <li>BSc Bouwkunde, TU Delft <span class="about__team-role">2021 — 2024</span></li>
+            <li>Ba History, Universiteit Utrecht<span class="about__team-role">2018 — 2021</span></li>
+          </ul>
+        </div>
+
+        <!-- CV_LINK: replace href with a link to your CV (PDF) -->
+        <a href="CV.html" target="_blank" rel="noopener" class="about__cv-link reveal">
+          Download CV (PDF)
+          <span class="about__cv-arrow" aria-hidden="true">↓</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ─── CONTACT ────────────────────────────────── -->
+    <section class="contact" id="contact" aria-label="Contact">
+      <h2 class="contact__heading reveal">
+        Let's<br /><em>work</em><br />together.
+      </h2>
+
+      <div class="contact__info reveal">
+        <p class="contact__intro">
+          I'm currently open to junior architect and design roles.
+          If my work is a good fit for your studio, I'd love to hear from you.
+        </p>
+        <div class="contact__info-block">
+          <!-- YOUR_EMAIL: change the email address -->
+          <p class="contact__info-label">Email</p>
+          <p class="contact__info-value" style="margin-bottom: 0">
+            <a href="mailto:nickvanramshorst@outlook.com">nickvanramshorst@outlook.com</a>
+          </p>
+        </div>
+        <div class="contact__info-block">
+          <!-- YOUR_PHONE -->
+          <p class="contact__info-label">Phone</p>
+          <p class="contact__info-value">
+            <a href="tel:+31612345678">+31 6 31157077</a>
+          </p>
+        </div>
+        <div class="contact__info-block">
+          <!-- YOUR_LOCATION -->
+          <p class="contact__info-label">Location</p>
+          <p class="contact__info-value">Utrecht, Netherlands<br /></p>
+        </div>
+        <div class="contact__info-block">
+          <!-- YOUR_LINKEDIN -->
+          <p class="contact__info-label">LinkedIn</p>
+          <p class="contact__info-value">
+            <a href="https://linkedin.com/in/nick-van-ramshorst-6b6445160" target="_blank" rel="noopener">linkedin.com/in/Nick van Ramshorst</a>
+          </p>
+        </div>
+        <!-- CV_LINK: replace href with a link to your CV (PDF) -->
+        <a href="CV.html" target="_blank" rel="noopener" class="about__cv-link">
+          Download CV (PDF)
+          <span class="about__cv-arrow" aria-hidden="true">↓</span>
+        </a>
+      </div>
+
+      <div class="contact__form-col reveal">
+        <span class="contact__form-label">Send me a message</span>
+        <form action="https://formspree.io/f/xojokezq" method="POST">
+          <div class="contact__field">
+            <input type="text" name="name" placeholder="Your name" aria-label="Your name" />
+          </div>
+          <div class="contact__field">
+            <input type="email" name="email" placeholder="Email address" aria-label="Email address" />
+          </div>
+          <div class="contact__field">
+            <input type="text" name="subject" placeholder="Company / Subject" aria-label="Company or subject" />
+          </div>
+          <div class="contact__field">
+            <textarea name="message" placeholder="Tell me about the role or project…" aria-label="Message"></textarea>
+          </div>
+          <button class="contact__submit" type="submit">Send Message</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── FOOTER ─────────────────────────────────── -->
+  <footer class="footer">
+    <span class="footer__copy">© 2025 Nick van Ramshorst. All rights reserved.</span>
+    <button class="footer__back" onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to top ↑</button>
+  </footer>
+
+  <script>
+    /* =====================================================
+       PROJECT DATA
+       ─────────────────────────────────────────────────
+       Add, edit, or reorder projects here.
+       Each project needs:
+         id        – unique number (controls display order 01, 02…)
+         title     – project name
+         year      – completion year
+         location  – city, country
+         type      – one of: Cultural, Residential, Commercial, Public, Research
+         cover     – image shown on TOC hover (URL or local path)
+         description – one sentence shown in header
+         body      – longer paragraphs (use \n\n for paragraph breaks)
+         details   – array of {label, value} pairs
+         images    – array of image URLs for the gallery
+         imageLayout – "single" | "2col" | "3col"
+    ===================================================== */
+    const projects = [
+      {
+        id: 1,
+        title: "Graduation Studio",
+        role: "Graduation Studio, master thesis",
+        year: "2026",
+        location: "Rudninkai, LT",
+        type: "Military",
+        cover: "images/Ex_inside_3.png",
+        description: "A new way of military thinking, a military base that transforms into public housing using minimal interventions.",
+        body: "This graduation project investigates how military architecture can be designed to support future civilian transformation without compromising its operational function. Rather than treating adaptive reuse as a post-military intervention, the project embeds adaptability into the initial architectural logic of the settlement. Located in Lithuania, the proposal rethinks the military barracks as a transitional buffer between a military base and the surrounding community. <br /><br />The design explores how spatial systems of hierarchy, surveillance, and control can gradually evolve into spaces that encourage openness, social interaction, and collective use. The architecture is organized around shared courtyards, layered thresholds, and flexible residential clusters that balance privacy with social cohesion. An infrastructural circulation spine, originally designed for military logistics, is conceived to transform into a public landscape for pedestrians and cyclists. Reinforced panic rooms are reinterpreted as intimate communal spaces, while adaptable living units allow the buildings to accommodate a wide range of future residential scenarios. <br /><br />By treating time as a design material, the project demonstrates how military infrastructure can become a resilient and socially responsible framework that remains relevant long after its original purpose has ended.",
+        details: [
+          { label: "Programme", value: "Military Housing" },
+          { label: "Area", value: "13,000 m²" },
+          { label: "Client", value: "TNO, Ministry of Defence" },
+          { label: "Status", value: "Passed" },
+        ],
+        images: [
+          "Images/Ex_thresholds.svg",
+          "Images/Ex_facade.svg",
+          "Images/Ex_Inside.svg",
+          "Images/Ex_plan.svg"
+        ],
+        imageLayout: "3col"
+      },
+      {
+        id: 2,
+        title: "De Ark, Amsterdam",
+        role: "Student Design",
+        year: "2025",
+        location: "Amsterdam, NLD",
+        type: "Heritage",
+        cover: "images/Her_Garden.svg",
+        description: "Transforming a heritage building into a community hub where health, nature, and social connection converge.",
+        body: "This project reimagines De Ark as an inclusive community hub where health, social interaction, and nature come together within a heritage setting. Responding to the needs of the surrounding neighbourhood, the proposal introduces a programme centred around sport and food, creating opportunities for both everyday encounters and long-term community engagement while respecting the building's existing identity.<br /><br />The design is organized around a series of welcoming public spaces connected by a continuous gallery that strengthens the relationship between the building and its landscape. Native planting, water management, and habitats for local wildlife are integrated into the design, reinforcing the connection between architecture and ecology. Developed through an iterative design process of continuous sketching and refinement, the project explores how adaptive reuse can create meaningful spaces that support both people and nature.",
+        details: [
+          { label: "Programme", value: "Church, Sport & Communitycentre" },
+          { label: "Area", value: "2900 m²" },
+          { label: "Client", value: "Regenbooggemeente" },
+        ],
+        images: [
+          "images/Her_Iso.svg",
+          "images/Her_Hal_1.svg",
+          "images/Her_Garden.svg",
+          "images/Her_Facade.pdf",
+          "images/Her_Plan.svg",
+          "images/Her_Draw.svg",
+          "images/Her_Sport.svg",
+          "images/Her_Church.svg",
+        ],
+        imageLayout: "3col"
+      },
+      {
+        id: 3,
+        title: "The Glass Seam",
+        role: "Master One",
+        year: "2025",
+        location: "Schiedam, NL",
+        type: "Residential",
+        cover: "Images/Fo_Sfeer.pdf",
+        description: "A cultural centre that combines craftsmanship, material research, and spatial experience through a light-filled timber structure.",
+        body: "This project explores the relationship between materiality, craftsmanship, and sustainability through the design of a cultural centre focused on glass. Alongside the architectural proposal, the project emphasized hands-on model making, providing extensive experience with woodworking techniques, workshop machinery, and material experimentation. Research into the interaction between glass and light informed the design and its spatial atmosphere. <br /> <br />Inspired by traditional Dutch industrial sheds, the four-storey timber building is divided into two volumes connected by a four-storey central atrium enclosed by a recycled glass façade. This open space acts as both the social heart of the building and a natural ventilation chimney, using the stack effect to passively cool the interior. Bridges spanning the atrium and a concealed sculptural staircase create a rich spatial sequence, while the use of timber and recycled glass reinforces the project's commitment to sustainable design.",
+        details: [
+          { label: "Programme", value: "Glass Workshop & Community Centre" },
+          { label: "Area", value: "8000 m²" },
+          { label: "Client", value: "Schiedam Municipality" },
+          { label: "Focus", value: "Physical Models" }
+        ],
+        images: [
+          "Images/Fo_Render.pdf",
+          "Images/Fo_50.HEIC",
+          "Images/Fo_200.PNG",
+          "Images/Climate.PDF"
+        ],
+        imageLayout: "2col"
+      },
+      {
+        id: 4,
+        title: "Redfern Renovation",
+        role: "Exchange Minor Australia",
+        year: "2022",
+        location: "Sydney, AU",
+        type: "Residential",
+        cover: "Images/AU_Picture.png",
+        description: "Exploring architecture as a personal, adaptable, and shared experience through the redesign of a historic Sydney home.",
+        body: "Designed during an exchange semester in Sydney, this project explores how architecture can foster community through adaptable and shared spaces. The experience introduced me to the Australian approach to architectural education, where the emphasis is placed on the personal experience of space, the relationships it creates, and its connection to the natural environment. This perspective has had a lasting influence on my approach to design. <br /> <br />Reimagining a historic worker's cottage in Redfern, the proposal responds to a 20-year growth scenario, allowing the home to evolve alongside its inhabitants while strengthening connections with the surrounding neighbourhood. Breaking away from the rigid geometry of the existing house, the design introduces a fluid spatial composition centred around a circular courtyard shared with the neighbouring property. By blurring the boundary between inside and outside and creating space for both people and local wildlife, the project explores architecture as a framework for community, adaptability, and everyday experience.",
+        details: [
+          { label: "Programme", value: "Residential Renovation" },
+          { label: "Area", value: "134 m²" },
+          { label: "Focus", value: "Community Building" }
+        ],
+        images: [
+          "Images/AU_Axo.pdf",
+          "Images/AU_Xero.pdf",
+          "Images/AU_Xero2.pdf",
+          "Images/AU_plan.png"
+        ],
+        imageLayout: "2col"
+      },
+      {
+        id: 5,
+        title: "AI Workflows",
+        role: "Research",
+        year: "2025",
+        location: "Studio, Delft",
+        type: "Industrial Design",
+        cover: "Images/Idem_head.png",
+        description: "Developing AI-driven design workflows that enhance architectural creativity through human-AI collaboration.",
+        body: "This research project explores how artificial intelligence can support architects during the conceptual design process through prompt engineering and human-AI collaboration. Working within a multidisciplinary team, I developed and tested a modular workflow that transforms architectural sketches into refined visualizations while integrating contextual analysis and AI-generated stakeholder feedback. <br /><br />The project focused on designing, evaluating, and iteratively improving AI agents capable of interpreting sketches, analysing visual styles, generating context-aware personas, and supporting design decision-making. Through continuous experimentation, prompt engineering, and web application development, the research demonstrated how complex AI workflows can enhance architectural creativity while keeping the designer in control of the process.",
+        details: [
+          { label: "Type", value: "Research" },
+          { label: "Partners", value: "TU Delft" },
+        ],
+        images: [
+          "Images/Idem_1.png",
+          "Images/Idem_2.png",
+          "Images/Idem_3.pdf",
+          "Images/Idem.mp4",
+          
+        ],
+        imageLayout: "2col"
+      }
+    ];
+
+    /* =====================================================
+       BUILD THE TOC + PROJECT PANELS
+    ===================================================== */
+    const tocList   = document.getElementById('tocList');
+    const tocCount  = document.getElementById('tocCount');
+    let openId      = null;
+
+    tocCount.textContent = projects.length + ' Projects';
+
+    projects.forEach((proj, idx) => {
+      const num = String(idx + 1).padStart(2, '0');
+
+      /* ── TOC item ─────────────────────────────────── */
+      const li = document.createElement('li');
+      li.className = 'toc__item';
+      li.dataset.id = proj.id;
+
+      li.innerHTML = `
+        <button
+          class="toc__trigger"
+          aria-expanded="false"
+          aria-controls="panel-${proj.id}"
+          data-cover="${proj.cover}"
+        >
+          <span class="toc__num">${num}</span>
+          <span class="toc__title-wrap">
+            <span class="toc__title">${proj.title}</span>
+          </span>
+          <span class="toc__meta">
+            <span class="toc__year">${proj.year}</span>
+            <span class="toc__type">${proj.role}</span>
+          </span>
+        </button>
+
+        <div class="project-panel" id="panel-${proj.id}" role="region" aria-label="${proj.title}">
+          <div class="project-panel__inner">
+
+            ${buildProjectHTML(proj)}
+
+          </div>
+        </div>
+      `;
+
+      tocList.appendChild(li);
+
+      /* ── Trigger click ────────────────────────────── */
+      const trigger = li.querySelector('.toc__trigger');
+      const panel   = li.querySelector('.project-panel');
+
+      trigger.addEventListener('click', () => {
+        const isOpen = panel.classList.contains('is-open');
+
+        /* Close any open panel first */
+        if (openId !== null && openId !== proj.id) {
+          const prevPanel   = document.getElementById('panel-' + openId);
+          const prevTrigger = prevPanel.previousElementSibling;
+          prevPanel.classList.remove('is-open');
+          prevTrigger.setAttribute('aria-expanded', 'false');
+        }
+
+        if (isOpen) {
+          panel.classList.remove('is-open');
+          trigger.setAttribute('aria-expanded', 'false');
+          openId = null;
+        } else {
+          panel.classList.add('is-open');
+          trigger.setAttribute('aria-expanded', 'true');
+          openId = proj.id;
+
+          /* Scroll the trigger into view after a tick */
+          setTimeout(() => {
+            trigger.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 400);
+        }
+      });
+
+      /* ── Close button inside panel ─────────────────── */
+      panel.addEventListener('click', e => {
+        if (e.target.closest('.proj__close')) {
+          panel.classList.remove('is-open');
+          trigger.setAttribute('aria-expanded', 'false');
+          openId = null;
+          /* Scroll back to trigger */
+          setTimeout(() => trigger.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+        }
+      });
+    });
+
+    /* =====================================================
+       BUILD PROJECT HTML
+    ===================================================== */
+    function buildProjectHTML(proj) {
+      const detailsHTML = proj.details.map(d => `
+        <div class="proj__detail">
+          <div class="proj__detail-label">${d.label}</div>
+          <div class="proj__detail-value">${d.value}</div>
+        </div>
+      `).join('');
+
+      const bodyParagraphs = proj.body.split('\n\n').map(p => `<p>${p}</p>`).join('');
+
+      const layoutClass = {
+        'single': '',
+        '2col':   'layout-2col',
+        '3col':   'layout-3col'
+      }[proj.imageLayout] || '';
+
+      let imagesHTML = '';
+      if (proj.imageLayout === 'single') {
+        imagesHTML = `<div class="proj__img-full"><img src="${proj.images[0]}" alt="${proj.title}" loading="lazy" /></div>`;
+      } else if (proj.imageLayout === '2col') {
+        imagesHTML = `<div class="proj__img-full"><img src="${proj.images[0]}" alt="${proj.title}" loading="lazy" /></div>`;
+        if (proj.images[1]) imagesHTML += `<div class="proj__img-half"><img src="${proj.images[1]}" alt="${proj.title}" loading="lazy" /></div>`;
+        if (proj.images[2]) imagesHTML += `<div class="proj__img-half"><img src="${proj.images[2]}" alt="${proj.title}" loading="lazy" /></div>`;
+        if (proj.images[3]) imagesHTML += `<div class="proj__img-full"><img src="${proj.images[3]}" alt="${proj.title}" loading="lazy" /></div>`;
+      } else if (proj.imageLayout === '3col') {
+        imagesHTML = `<div class="proj__img-full"><img src="${proj.images[0]}" alt="${proj.title}" loading="lazy" /></div>`;
+        if (proj.images[1]) imagesHTML += `<div class="proj__img-half"><img src="${proj.images[1]}" alt="${proj.title}" loading="lazy" /></div>`;
+        if (proj.images[2]) imagesHTML += `<div class="proj__img-tall"><img src="${proj.images[2]}" alt="${proj.title}" loading="lazy" /></div>`;
+        if (proj.images[3]) imagesHTML += `<div class="proj__img-full"><img src="${proj.images[3]}" alt="${proj.title}" loading="lazy" /></div>`;
+      }
+
+      return `
+        <div class="proj__header">
+          <div class="proj__header-spacer"></div>
+          <div class="proj__title-block">
+            <h2 class="proj__title">${proj.title}</h2>
+            <p class="proj__description">${proj.description}</p>
+            <button class="proj__close" aria-label="Close project">
+              <span class="proj__close-icon" aria-hidden="true"></span>
+              Close
+            </button>
+          </div>
+          <div class="proj__info-block">
+            <div class="proj__info-row">
+              <div class="proj__info-label">Year</div>
+              <div class="proj__info-value">${proj.year}</div>
+            </div>
+            <div class="proj__info-row">
+              <div class="proj__info-label">Location</div>
+              <div class="proj__info-value">${proj.location}</div>
+            </div>
+            <div class="proj__info-row">
+              <div class="proj__info-label">My Role</div>
+              <div class="proj__info-value">${proj.role}</div>
+            </div>
+            <div class="proj__info-row">
+              <div class="proj__info-label">Type</div>
+              <div class="proj__info-value">${proj.type}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="proj__images ${layoutClass}">
+          ${imagesHTML}
+        </div>
+
+        <div class="proj__body">
+          <div class="proj__body-text">
+            ${bodyParagraphs}
+          </div>
+          <div class="proj__details">
+            ${detailsHTML}
+          </div>
+        </div>
+      `;
+    }
+
+    /* =====================================================
+       PREVIEW IMAGE (follows cursor on TOC hover)
+    ===================================================== */
+    const previewEl  = document.getElementById('previewImage');
+    const previewImg = document.getElementById('previewImg');
+    let   mouseX = 0, mouseY = 0;
+    let   targetX = 0, targetY = 0;
+    let   raf;
+
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function lerpPreview() {
+      targetX += (mouseX - targetX) * 0.1;
+      targetY += (mouseY - targetY) * 0.1;
+      previewEl.style.left = targetX + 20 + 'px';
+      previewEl.style.top  = targetY - previewEl.offsetHeight / 2 + 'px';
+      raf = requestAnimationFrame(lerpPreview);
+    }
+    lerpPreview();
+
+    document.querySelectorAll('.toc__trigger').forEach(trigger => {
+      trigger.addEventListener('mouseenter', () => {
+        const cover = trigger.dataset.cover;
+        if (cover) {
+          previewImg.src = cover;
+          previewEl.classList.add('is-visible');
+        }
+      });
+      trigger.addEventListener('mouseleave', () => {
+        previewEl.classList.remove('is-visible');
+      });
+    });
+
+    /* =====================================================
+       CUSTOM CURSOR
+    ===================================================== */
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('is-hovering'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering'));
+    });
+    document.querySelectorAll('img').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('is-image'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('is-image'));
+    });
+
+    /* =====================================================
+       SCROLL REVEAL
+    ===================================================== */
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer  = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => observer.observe(el));
+
+    /* =====================================================
+       CONTACT FORM (demo — logs to console)
+    ===================================================== */
+  /* =====================================================
+       TOP FADE OVERLAY
+    ===================================================== */
+    const fadeOverlay = document.createElement('div');
+    fadeOverlay.style.cssText = `
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 1000px;
+      background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 10%);
+      pointer-events: none;
+      z-index: 99;
+    `;
+    document.body.appendChild(fadeOverlay);
+  </script>
+</body>
+</html>
