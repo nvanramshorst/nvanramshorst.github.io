@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nick van Ramshorst — CV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;400&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 300;
+      background: #e4e4e4;
+      display: flex;
+      justify-content: center;
+      padding: 48px 24px;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      display: grid;
+      grid-template-columns: 68mm 1fr;
+      grid-template-rows: auto 1fr;
+      box-shadow: 0 4px 48px rgba(0,0,0,0.14);
+    }
+
+    /* HEADER */
+    .header {
+      grid-column: 1 / -1;
+      padding: 13mm 12mm 9mm;
+      border-bottom: 0.5px solid #1a1a1a;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .name {
+      font-family: 'Cormorant', serif;
+      font-weight: 300;
+      font-size: 54px;
+      letter-spacing: 0.01em;
+      line-height: 1;
+      color: #1a1a1a;
+    }
+
+    .name-title {
+      font-size: 8.5px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #999;
+      margin-top: 7px;
+    }
+
+    .header-contact {
+      text-align: right;
+      font-size: 8.5px;
+      color: #777;
+      letter-spacing: 0.04em;
+      line-height: 2;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      border-right: 0.5px solid #d8d8d8;
+      padding: 9mm 8mm;
+      display: flex;
+      flex-direction: column;
+      gap: 8mm;
+    }
+
+    /* MAIN */
+    .main {
+      padding: 9mm 11mm;
+      display: flex;
+      flex-direction: column;
+      gap: 7.5mm;
+    }
+
+    /* PHOTO */
+    .photo {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      border: 0.5px solid #d0d0d0;
+    }
+
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      filter: grayscale(18%) contrast(1.05);
+    }
+
+    /* SECTION LABELS */
+    .section-label {
+      font-size: 7px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 4.5mm;
+      padding-bottom: 2mm;
+      border-bottom: 0.5px solid #e0e0e0;
+    }
+
+    /* PERSONALIA */
+    .contact-entry { margin-bottom: 3mm; }
+
+    .contact-key {
+      display: block;
+      font-size: 7px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #bbb;
+      margin-bottom: 1.5px;
+    }
+
+    .contact-val {
+      font-size: 8.5px;
+      color: #3a3a3a;
+      line-height: 1.6;
+      letter-spacing: 0.01em;
+    }
+
+    /* LANGUAGE BARS — thin rectangles, architectural */
+    .language-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3mm;
+    }
+
+    .language-name {
+      font-size: 8.5px;
+      color: #3a3a3a;
+      letter-spacing: 0.04em;
+    }
+
+    .lang-bars { display: flex; gap: 2.5px; }
+
+    .lang-bar {
+      width: 11px;
+      height: 2px;
+      background: #e4e4e4;
+    }
+
+    .lang-bar.on { background: #1a1a1a; }
+
+    /* TAGS */
+    .tag-list { display: flex; flex-wrap: wrap; gap: 1.5px 3px; }
+
+    .tag {
+      font-size: 8px;
+      color: #555;
+      letter-spacing: 0.05em;
+      line-height: 2;
+    }
+
+    .tag:not(:last-child)::after { content: " ·"; color: #ccc; }
+
+    /* PROFILE */
+    .profile-text {
+      font-size: 9.5px;
+      line-height: 1.95;
+      color: #404040;
+      letter-spacing: 0.01em;
+    }
+
+    /* TIMELINE ENTRIES */
+    .entries { display: flex; flex-direction: column; }
+
+    .entry {
+      display: grid;
+      grid-template-columns: 20mm 1fr;
+      padding-bottom: 4.5mm;
+      position: relative;
+    }
+
+    /* Hairline timeline rule — sits at 22mm, well clear of text */
+    .entry::before {
+      content: '';
+      position: absolute;
+      left: 22mm;
+      top: 10px;
+      bottom: 0;
+      width: 0.5px;
+      background: #e8e8e8;
+    }
+
+    .entry:last-child::before { display: none; }
+
+    /* Square marker — centred on the timeline rule */
+    .entry::after {
+      content: '';
+      position: absolute;
+      left: calc(22mm - 2px);
+      top: 5px;
+      width: 4px;
+      height: 4px;
+      background: #1a1a1a;
+    }
+
+    .entry-date {
+      font-size: 7.5px;
+      color: #bbb;
+      letter-spacing: 0.04em;
+      line-height: 1.7;
+      padding-top: 1px;
+    }
+
+    /* Content starts at 8mm indent — 6mm clear of the 22mm marker */
+    .entry-content { padding-left: 8mm; }
+
+    .entry-title {
+      font-size: 9.5px;
+      font-weight: 500;
+      color: #1a1a1a;
+      letter-spacing: 0.02em;
+      line-height: 1.4;
+    }
+
+    .entry-org {
+      font-size: 8.5px;
+      color: #777;
+      letter-spacing: 0.02em;
+      margin-top: 1.5px;
+      line-height: 1.5;
+    }
+
+    .entry-note {
+      font-size: 7.8px;
+      color: #aaa;
+      letter-spacing: 0.01em;
+      margin-top: 1.5px;
+      line-height: 1.5;
+    }
+
+    .entry-highlight {
+      font-size: 7.8px;
+      color: #aaa;
+      letter-spacing: 0.01em;
+      margin-top: 1.5px;
+      line-height: 1.5;
+    }
+
+    /* Divider between main sections */
+    .section-divider {
+      width: 100%;
+      height: 0.5px;
+      background: #f0f0f0;
+      margin: 1mm 0 0;
+      display: none;
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .page { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div>
+      <div class="name">Nick van Ramshorst</div>
+      <div class="name-title">Architecture</div>
+    </div>
+    <div class="header-contact">
+      Utrecht, The Netherlands<br>
+      +31 6 31 15 70 77<br>
+      nickvanramshorst@outlook.com
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <img
+            src="images/Me.HEIC"
+            alt="Portrait of Nick van Ramshorst"
+            loading="lazy"
+          />
+
+    <!-- Personalia -->
+    <div>
+      <div class="section-label">Personalia</div>
+      <div class="contact-entry">
+        <span class="contact-key">Full name</span>
+        <span class="contact-val">Nick Gijsbert van Ramshorst</span>
+      </div>
+      <div class="contact-entry">
+        <span class="contact-key">Date of birth</span>
+        <span class="contact-val">21 March 2000, Harderwijk</span>
+      </div>
+      <div class="contact-entry">
+        <span class="contact-key">Nationality</span>
+        <span class="contact-val">Dutch</span>
+      </div>
+      <div class="contact-entry">
+        <span class="contact-key">Driving licence</span>
+        <span class="contact-val">AM, B</span>
+      </div>
+      <div class="contact-entry">
+        <span class="contact-key">LinkedIn</span>
+        <span class="contact-val" style="font-size:7.8px; word-break:break-all;">linkedin.com/in/nick-van-ramshorst-6b6445160</span>
+      </div>
+    </div>
+
+    <!-- Languages -->
+    <div>
+      <div class="section-label">Languages</div>
+      <div class="language-row">
+        <span class="language-name">Dutch</span>
+        <div class="lang-bars">
+          <div class="lang-bar on"></div><div class="lang-bar on"></div>
+          <div class="lang-bar on"></div><div class="lang-bar on"></div><div class="lang-bar on"></div>
+        </div>
+      </div>
+      <div class="language-row">
+        <span class="language-name">English</span>
+        <div class="lang-bars">
+          <div class="lang-bar on"></div><div class="lang-bar on"></div>
+          <div class="lang-bar on"></div><div class="lang-bar on"></div><div class="lang-bar"></div>
+        </div>
+      </div>
+      <div class="language-row">
+        <span class="language-name">German</span>
+        <div class="lang-bars">
+          <div class="lang-bar on"></div><div class="lang-bar on"></div>
+          <div class="lang-bar on"></div><div class="lang-bar"></div><div class="lang-bar"></div>
+        </div>
+      </div>
+      <div class="language-row">
+        <span class="language-name">French</span>
+        <div class="lang-bars">
+          <div class="lang-bar on"></div><div class="lang-bar on"></div>
+          <div class="lang-bar"></div><div class="lang-bar"></div><div class="lang-bar"></div>
+        </div>
+      </div>
+      <div class="language-row">
+        <span class="language-name">Arabic</span>
+        <div class="lang-bars">
+          <div class="lang-bar on"></div><div class="lang-bar"></div>
+          <div class="lang-bar"></div><div class="lang-bar"></div><div class="lang-bar"></div>
+        </div>
+      </div>
+      <div class="language-row">
+        <span class="language-name">Spanish</span>
+        <div class="lang-bars">
+          <div class="lang-bar on"></div><div class="lang-bar"></div>
+          <div class="lang-bar"></div><div class="lang-bar"></div><div class="lang-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Software & Skills -->
+    <div>
+      <div class="section-label">Software & Skills</div>
+      <div class="tag-list">
+        <span class="tag">Adobe Creative Suite</span>
+        <span class="tag">Rhinoceros</span>
+        <span class="tag">Writing</span>
+        <span class="tag">Communication</span>
+        <span class="tag">Presenting</span>
+        <span class="tag">Team leadership</span>
+      </div>
+    </div>
+
+
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- Profile -->
+    <div>
+      <div class="section-label">Profile</div>
+      <p class="profile-text">
+        Architecture graduate from TU Delft with a broad academic foundation spanning architectural design and history. Studio experience across the Netherlands and Australia (University of Sydney) has sharpened my ability to work across cultural contexts and design perspectives. I bring precision, initiative, and genuine curiosity to every project, grounded in research, open to collaboration.
+      </p>
+    </div>
+
+    <!-- Education -->
+    <div>
+      <div class="section-label">Education</div>
+      <div class="entries">
+
+        <div class="entry">
+          <div class="entry-date">09/2024 —<br>07/2026</div>
+          <div class="entry-content">
+            <div class="entry-title">Master of Architecture</div>
+            <div class="entry-org">Technical University Delft</div>
+            <div class="entry-highlight">Extreme Graduation Studio</div>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-date">09/2021 —<br>06/2024</div>
+          <div class="entry-content">
+            <div class="entry-title">Bachelor of Architecture</div>
+            <div class="entry-org">Technical University Delft</div>
+            <div class="entry-highlight">Minor in Design, University of Sydney, Australia</div>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-date">09/2018 —<br>05/2021</div>
+          <div class="entry-content">
+            <div class="entry-title">Bachelor of History</div>
+            <div class="entry-org">Utrecht University</div>
+            <div class="entry-note">Violence, Conflict & Security</div>
+            <div class="entry-note">Minor in Arabic Language</div>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-date">09/2012 —<br>06/2018</div>
+          <div class="entry-content">
+            <div class="entry-title">VWO E&amp;M / C&amp;M</div>
+            <div class="entry-org">Corlaer College, Nijkerk</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Work Experience -->
+    <div>
+      <div class="section-label">Work Experience</div>
+      <div class="entries">
+
+        <div class="entry">
+          <div class="entry-date">01/2026 —<br>present</div>
+          <div class="entry-content">
+            <div class="entry-title">Assistant Manager</div>
+            <div class="entry-org">Alberto's Italian, Nijkerk</div>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-date">09/2024 —<br>12/2025</div>
+          <div class="entry-content">
+            <div class="entry-title">Head Waiter</div>
+            <div class="entry-org">Alberto's Italian, Nijkerk</div>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-date">07/2017 —<br>08/2024</div>
+          <div class="entry-content">
+            <div class="entry-title">Waiter & Kitchen Employee</div>
+            <div class="entry-org">Alberto's Italian, Nijkerk</div>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-date">11/2025 —<br>12/2025</div>
+          <div class="entry-content">
+            <div class="entry-title">MarktManager</div>
+            <div class="entry-org">De Kerstmarktspecialist, Spakenburg</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Extracurricular -->
+    <div>
+      <div class="section-label">Extracurricular</div>
+      <div class="entries">
+
+        <div class="entry">
+          <div class="entry-date">May 2016</div>
+          <div class="entry-content">
+            <div class="entry-title">Assistant Organizer — Sports Day for the Disabled</div>
+            <div class="entry-org">'s Heeren Loo, Nijkerk</div>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-date">09/2013 —<br>06/2015</div>
+          <div class="entry-content">
+            <div class="entry-title">Chromebook Helpdesk Employee</div>
+            <div class="entry-org">Corlaer College, Nijkerk</div>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-date">03/2016 —<br>05/2016</div>
+          <div class="entry-content">
+            <div class="entry-title">Library Internship</div>
+            <div class="entry-org">Bibliotheek Nijkerk</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Certificates -->
+    <div>
+      <div class="section-label">Certificates</div>
+      <div class="entries">
+
+        <div class="entry">
+          <div class="entry-date">09/2016 —<br>07/2017</div>
+          <div class="entry-content">
+            <div class="entry-title">Junior Company</div>
+            <div class="entry-org">Jong Ondernemen</div>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-date">22/07/2019</div>
+          <div class="entry-content">
+            <div class="entry-title">Physics VWO Level</div>
+            <div class="entry-org">Government Examination — DUO</div>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-date">09/2009 —<br>09/2010</div>
+          <div class="entry-content">
+            <div class="entry-title">General Musical Education</div>
+            <div class="entry-org">Muziekschool Noordwest Veluwe</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+</body>
+</html>
